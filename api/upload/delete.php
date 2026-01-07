@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "../helpers/response.php";
-require_once __DIR__ . "../services/delete.service.php";
+require_once __DIR__ . "../../helpers/response.php";
+require_once __DIR__ . "../../services/delete.service.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "DELETE") {
   jsonResponse(["success" => false, "message" => "DELETE only"], 405);

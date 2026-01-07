@@ -1,44 +1,45 @@
 
 # 📁 PHP File Uploader API
 
-A simple and lightweight PHP API for uploading **single** or **multiple** files to your server and returning public URLs for client use.
+A lightweight and secure PHP API for uploading and deleting **single** or **multiple** files, with automatic public URL generation.
 
 ---
 
 ## 🚀 Features
 
 * Upload **single** or **multiple** files
+* Delete **single** or **multiple** files
 * Supports **multipart/form-data**
 * Automatically stores files on your server
-* Returns **remote URLs** for each uploaded file
-* Easy to integrate with **web**, **mobile**, or **backend** apps
+* Returns **public URLs** for client use
+* Easy integration with **Web**, **Mobile**, and **Backend** apps
 
 ---
 
 ## 📦 Installation
 
-1. Clone this repository:
+1. Clone the repository
 
-   ```bash
-   git clone https://github.com/AustineSamuel/php-document-uploader.git
-   ```
+```bash
+git clone https://github.com/AustineSamuel/php-document-uploader.git
+```
 
 2. Move the project into any PHP-supported server:
 
-   * XAMPP
-   * WAMP
-   * LAMP
-   * cPanel hosting
-   * VPS / Cloud server
+* XAMPP
+* WAMP
+* LAMP
+* cPanel hosting
+* VPS / Cloud server
 
-3. Make sure your server has:
+3. Ensure your server has:
 
-   * PHP `>= 7.4`
-   * `file_uploads = On` in `php.ini`
+* PHP **>= 7.4**
+* `file_uploads = On` in `php.ini`
 
 ---
 
-## 🌐 Server URL
+## 🌐 Base URL
 
 After deployment, your API will be available at:
 
@@ -52,17 +53,17 @@ https://your-domain.com/
 
 ## 1️⃣ Upload Multiple Files
 
-### **Endpoint**
+### Endpoint
 
 ```
 POST /upload/multiple
 ```
 
-### **Request**
+### Request
 
 * Content-Type: `multipart/form-data`
 
-### **Form Data Example**
+### Form Data
 
 ```text
 filename   : file
@@ -70,49 +71,104 @@ filename2  : file
 filename3  : file
 ```
 
-### **Response**
+### Response
 
 ```json
 {
-  "message": "success file uploaded successfully",
-  "filename": "https://your-domain.com/uploads/file1.jpg",
-  "filename2": "https://your-domain.com/uploads/file2.png",
-  "filename3": "https://your-domain.com/uploads/file3.pdf"
+  "success": true,
+  "message": "Files uploaded successfully",
+  "files": {
+    "filename": "https://your-domain.com/uploads/file1.jpg",
+    "filename2": "https://your-domain.com/uploads/file2.png",
+    "filename3": "https://your-domain.com/uploads/file3.pdf"
+  }
 }
 ```
-
-### **What happens**
-
-* Files are saved on your server
-* Public URLs are generated
-* URLs are returned to the client
 
 ---
 
 ## 2️⃣ Upload Single File
 
-### **Endpoint**
+### Endpoint
 
 ```
 POST /upload/single
 ```
 
-### **Request**
+### Request
 
 * Content-Type: `multipart/form-data`
 
-### **Form Data Example**
+### Form Data
 
 ```text
 file : file
 ```
 
-### **Response**
+### Response
 
 ```json
 {
-  "message": "success file uploaded successfully",
+  "success": true,
+  "message": "File uploaded successfully",
   "url": "https://your-domain.com/uploads/myfile.jpg"
+}
+```
+
+---
+
+## 3️⃣ Delete Single File
+
+### Endpoint
+
+```
+DELETE /delete
+```
+
+### Query
+
+```text
+?file=myfile.jpg
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "File deleted successfully"
+}
+```
+
+---
+
+## 4️⃣ Delete Multiple Files
+
+### Endpoint
+
+```
+DELETE /delete-multiple
+```
+
+### Query Example
+
+```text
+?file[]=img1.jpg&file[]=doc1.pdf&file[]=video.mp4
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Delete completed",
+  "deleted": ["img1.jpg", "doc1.pdf"],
+  "errors": [
+    {
+      "file": "video.mp4",
+      "error": "File not found"
+    }
+  ]
 }
 ```
 
@@ -120,37 +176,54 @@ file : file
 
 # 🧪 Testing with Postman
 
-### Multiple Upload
+## Upload Multiple
 
 * Method: `POST`
 * URL: `http://localhost/upload/multiple`
 * Body → `form-data`
-* Add:
 
   * `filename` → File
   * `filename2` → File
   * `filename3` → File
 
-### Single Upload
+## Upload Single
 
 * Method: `POST`
 * URL: `http://localhost/upload/single`
 * Body → `form-data`
-* Add:
 
   * `file` → File
 
+## Delete Single
+
+* Method: `DELETE`
+* URL:
+
+  ```
+  http://localhost/delete?file=test.jpg
+  ```
+
+## Delete Multiple
+
+* Method: `DELETE`
+* URL:
+
+  ```
+  http://localhost/delete-multiple?file[]=a.jpg&file[]=b.png
+  ```
+
 ---
 
-# 🔐 Security Tips
+# 🔐 Security Best Practices
 
-For production use, it is recommended to:
+For production use, always:
 
-* Validate file types (e.g. only images, pdf, etc.)
-* Limit file size
-* Rename files to avoid conflicts
-* Disable execution in upload folders
-* Use HTTPS
+* Validate file **MIME types**
+* Enforce **file size limits**
+* Rename files to avoid **collisions**
+* Disable PHP execution in `/uploads`
+* Use **HTTPS**
+* Add **authentication** for delete endpoints
 
 ---
 
@@ -158,9 +231,22 @@ For production use, it is recommended to:
 
 All uploaded files are:
 
-* Moved to the server storage directory
-* Made accessible via a public URL
+* Stored inside the `/uploads` directory
+* Exposed via **public URLs**
 * Returned instantly to the client
+
+---
+
+# 🧩 Integration Examples
+
+Works perfectly with:
+
+* **React / Next.js**
+* **Flutter**
+* **React Native**
+* **Node.js**
+* **Laravel**
+* **Any HTTP client**
 
 ---
 
@@ -168,21 +254,13 @@ All uploaded files are:
 
 Contributions are welcome!
 
-1. Fork the repository
-2. Create a new branch
-3. Make your changes
-4. Submit a pull request
+1. Fork the repo
+2. Create a feature branch
+3. Commit your changes
+4. Open a pull request
 
 ---
 
 # 📄 License
 
-This project is open-source and available under the **MIT License**.
-
----
-
-If you want, I can now:
-
-* add **API diagrams**
-* add **example frontend upload code** (React, Flutter, Node, etc.)
-* or generate a **logo + badges** for your GitHub page 🚀
+Released under the **MIT License** — free for personal and commercial use.

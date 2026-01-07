@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "../helpers/response.php";
-require_once __DIR__ . "../services/upload.service.php";
+require_once __DIR__ . "../../helpers/response.php";
+require_once __DIR__ . "../../services/upload.service.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
   jsonResponse(["success" => false, "message" => "POST only"], 405);
