@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHP File Uploader API Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    section {
+      background: white;
+      padding: 1rem 2rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #4CAF50;
+    }
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+    }
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    pre {
+      background: #eee;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    ul {
+      margin-top: 1rem;
+      padding-left: 1.2rem;
+    }
+    a.github-link {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+    a.github-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>PHP File Uploader API Tester</h1>
+  <p>Check full documentation on <a href="https://github.com/AustineSamuel/php-document-uploader" target="_blank" class="github-link">GitHub</a></p>
+</header>
+
+<main>
+
+  <!-- Server URL -->
+  <section>
+    <h2>1. Set Server URL</h2>
+    <label for="serverUrl">Server Base URL (e.g., https://your-domain.com)</label>
+    <input type="text" id="serverUrl" placeholder="Enter your server URL">
+  </section>
+
+  <!-- Upload Single File -->
+  <section>
+    <h2>2. Upload Single File</h2>
+    <input type="file" id="singleFile">
+    <button onclick="uploadSingle()">Upload</button>
+    <pre id="singleResponse"></pre>
+  </section>
+
+  <!-- Upload Multiple Files -->
+  <section>
+    <h2>3. Upload Multiple Files</h2>
+    <input type="file" id="multiFile1">
+    <input type="file" id="multiFile2">
+    <input type="file" id="multiFile3">
+    <button onclick="uploadMultiple()">Upload Multiple</button>
+    <pre id="multiResponse"></pre>
+  </section>
+
+  <!-- Delete Single File -->
+  <section>
+    <h2>4. Delete Single File</h2>
+    <label for="deleteSingleName">Filename to Delete</label>
+    <input type="text" id="deleteSingleName">
+    <button onclick="deleteSingle()">Delete</button>
+    <pre id="deleteSingleResponse"></pre>
+  </section>
+
+  <!-- Delete Multiple Files -->
+  <section>
+    <h2>5. Delete Multiple Files</h2>
+    <label for="deleteMultiNames">Filenames (comma separated)</label>
+    <input type="text" id="deleteMultiNames" placeholder="file1.jpg,file2.png">
+    <button onclick="deleteMultiple()">Delete Multiple</button>
+    <pre id="deleteMultiResponse"></pre>
+  </section>
+
+</main>
+
+<script>
+function getServerUrl() {
+  const url = document.getElementById("serverUrl").value.trim();
+  if (!url) {
+    alert("Please enter server URL first!");
+    throw new Error("Server URL not set");
+  }
+  return url.replace(/\/$/, ''); // remove trailing slash
+}
+
+// Upload single file
+
+// Upload single file
+async function uploadSingle() {
+  try {
+    const url = getServerUrl() + "/api/upload/single/"; // no trailing slash
+    const fileInput = document.getElementById("singleFile");
+    if (!fileInput.files[0]) {
+      alert("Select a file to upload");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    const res = await fetch(url, {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+    const data = await res.json();
+    document.getElementById("singleResponse").textContent = JSON.stringify(data, null, 2);
+  } catch(err) {
+    document.getElementById("singleResponse").textContent = err;
+  }
+}
+
+// Upload multiple files
+async function uploadMultiple() {
+  try {
+    const url = getServerUrl() + "/api/upload/multiple/"; // no trailing slash
+    const files = [
+      document.getElementById("multiFile1").files[0],
+      document.getElementById("multiFile2").files[0],
+      document.getElementById("multiFile3").files[0]
+    ].filter(Boolean);
+
+    if (files.length === 0) {
+      alert("Select at least one file to upload");
+      return;
+    }
+
+    const formData = new FormData();
+    files.forEach((file, i) => formData.append("filename" + (i + 1), file));
+
+    const res = await fetch(url, {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+    const data = await res.json();
+    document.getElementById("multiResponse").textContent = JSON.stringify(data, null, 2);
+  } catch(err) {
+    document.getElementById("multiResponse").textContent = err;
+  }
+}
+// Delete single file
+async function deleteSingle() {
+  try {
+    const server = getServerUrl();
+    const file = document.getElementById("deleteSingleName").value.trim();
+    if (!file) { alert("Enter filename to delete"); return; }
+    const url = `${server}/api/delete/?file=${encodeURIComponent(file)}`;
+    const res = await fetch(url, { method: "DELETE" });
+    const data = await res.json();
+    document.getElementById("deleteSingleResponse").textContent = JSON.stringify(data, null, 2);
+  } catch(err) {
+    document.getElementById("deleteSingleResponse").textContent = err;
+  }
+}
+
+// Delete multiple files
+async function deleteMultiple() {
+  try {
+    const server = getServerUrl();
+    const files = document.getElementById("deleteMultiNames").value.split(",").map(f => f.trim()).filter(Boolean);
+    if (files.length === 0) { alert("Enter filenames to delete"); return; }
+    const params = files.map(f => `file[]=${encodeURIComponent(f)}`).join("&");
+    const url = `${server}/api/delete-multiple/?${params}`;
+    const res = await fetch(url, { method: "DELETE" });
+    const data = await res.json();
+    document.getElementById("deleteMultiResponse").textContent = JSON.stringify(data, null, 2);
+  } catch(err) {
+    document.getElementById("deleteMultiResponse").textContent = err;
+  }
+}
+</script>
+
+</body>
+</html>

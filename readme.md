@@ -122,7 +122,7 @@ file : file
 ### Endpoint
 
 ```
-DELETE /delete
+DELETE /delete/
 ```
 
 ### Query
@@ -147,7 +147,7 @@ DELETE /delete
 ### Endpoint
 
 ```
-DELETE /delete-multiple
+DELETE /delete-multiple/
 ```
 
 ### Query Example
@@ -200,7 +200,7 @@ DELETE /delete-multiple
 * URL:
 
   ```
-  http://localhost/delete?file=test.jpg
+  http://localhost/api/delete/?file=test.jpg
   ```
 
 ## Delete Multiple
@@ -209,7 +209,7 @@ DELETE /delete-multiple
 * URL:
 
   ```
-  http://localhost/delete-multiple?file[]=a.jpg&file[]=b.png
+  http://localhost/api/delete-multiple/?file[]=a.jpg&file[]=b.png
   ```
 
 ---
