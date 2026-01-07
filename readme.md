@@ -20,7 +20,7 @@ A simple and lightweight PHP API for uploading **single** or **multiple** files 
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/your-username/php-file-uploader.git
+   git clone https://github.com/AustineSamuel/php-document-uploader.git
    ```
 
 2. Move the project into any PHP-supported server:
