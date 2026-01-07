@@ -235,9 +235,41 @@ All uploaded files are:
 * Exposed via **public URLs**
 * Returned instantly to the client
 
+## ⚠️ Common Errors & Warnings
+
+### 1. `mkdir(): Permission denied`
+
+**Cause:** PHP cannot create the `uploads/` folder because of insufficient folder permissions.
+
+**Solution:**
+Manually create the folder and set writable permissions:
+
+```bash
+cd /path/to/php-document-uploader
+mkdir uploads
+chmod 777 uploads
+```
+
+> ⚠️ `777` allows read/write/execute for everyone. For production, adjust to more secure permissions while keeping the folder writable by your web server.
+
 ---
 
-# 🧩 Integration Examples
+### 2. `move_uploaded_file(): Failed to open stream` / `Unable to move ...`
+
+**Cause:** PHP cannot save the uploaded file to the `uploads/` folder, usually due to **non-existent folder** or **permissions issue**.
+
+**Solution:**
+Ensure the `uploads/` folder exists and is writable (see previous solution).
+
+---
+
+### ✅ Key Notes
+
+* Always ensure `uploads/` is present and writable by the web server (Apache, Nginx, etc.).
+* These warnings typically occur on local servers like XAMPP, WAMP, or MAMP.
+
+---
+
 
 Works perfectly with:
 
