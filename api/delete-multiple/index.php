@@ -1,4 +1,5 @@
 <?php
+require_once "../../config/cors.php";
 require_once "../../config/enable-errors.php";
 require_once  "../../helpers/response.php";
 require_once  "../../services/delete.service.php";
